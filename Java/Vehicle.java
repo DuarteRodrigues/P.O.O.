@@ -1,7 +1,3 @@
-// Homework 1: Write a java program by creating a class named vehicle with two methods and create two objects of that class.
-
-package Java;
-
 public class Vehicle {
     private String brand;
     private String model;
@@ -9,7 +5,7 @@ public class Vehicle {
     // Constructor to initialize the vehicle's brand and model
     public Vehicle(String brand, String model){
         this.brand = brand;
-        this.model=model;
+        this.model = model;
     }
 
     // Method created to display info about the vehicle

@@ -1,3 +1,6 @@
+// Duarte Rodrigues - a22206488
+// Licenciatura de Engenharia Informática e Aplicações - IPLuso
+
 import java.util.Scanner;
 
 public class Homework1{
@@ -61,6 +64,7 @@ public class Homework1{
         System.out.println("The perimeter of the rectangle is: " + (h+h)+(w+w));
         System.out.println("The area of the rectangle is: " + h*w);
 
+        scanner.close();
     }
 
     //Function to check if a number is prime
