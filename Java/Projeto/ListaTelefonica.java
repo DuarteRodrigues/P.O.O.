@@ -6,60 +6,10 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ListaTelefonica{
-    private List<Contacto> contactos;
+    public static List<Contacto> contactos;
 
     public ListaTelefonica(){
         this.contactos = new ArrayList<>();
-    }
-
-    public void adicionarContacto(){
-        Scanner scanner = new Scanner(System.in);
-
-        try{
-            System.out.println("Nome do contacto: ");
-            String nome = scanner.nextLine();
-
-            System.out.println("Telefone do contacto: ");
-            String telefone = scanner.nextLine();
-
-            System.out.println("E-mail do contacto: ");
-            String email = scanner.nextLine();
-
-            Contacto aContacto = new Contacto(nome, telefone, email);
-            contactos.add(aContacto);
-
-            System.out.println("Contacto adicionado com sucesso!");
-        } catch (Exception e) {
-            System.err.println("Erro ao adicionar contacto:" + e.getMessage());
-        }    
-    }
-
-    public void modificarContacto(String nomeAntigo){
-        Scanner scanner = new Scanner(System.in);
-
-        try{
-            for (int i = 0; i < contactos.size(); i++){
-                Contacto contacto = contactos.get(i);
-                if(contacto.getNome().equals(nomeAntigo)){
-                    System.out.println("Nome do novo contacto: ");
-                    String novoNome = scanner.nextLine();
-
-                    System.out.println("Nº de telefone do novo contacto: ");
-                    String novoTelefone = scanner.nextLine();
-
-                    System.out.println("Email do novo contacto: ");
-                    String novoEmail = scanner.nextLine();
-
-                    Contacto mContacto = new Contacto(novoNome, novoTelefone, novoEmail);
-                    contactos.set(i, mContacto);
-
-                    System.out.println("Contacto modificado com sucesso!");
-                }
-            }
-            System.out.println("Contacto com o nome " + nomeAntigo + " não encontrado.");
-        } catch (Exception e) {
-            System.err.println("Erro na modifcação do contacto:" + e.getMessage());
-        }
     }
 
     // Método para carregar os conteúdos do ficheiro CSV.
@@ -109,7 +59,7 @@ public class ListaTelefonica{
         }
     }
 
-    // Método para organizar a lista com base no Nome
+    // Método para organizar a lista com base no Nome.
     public void ordenarNome(){
         int n = contactos.size();
 
@@ -125,7 +75,7 @@ public class ListaTelefonica{
         }
     }
 
-    // Método para organizar a lista com base no Número de Telefone
+    // Método para organizar a lista com base no Número de Telefone.
     public void ordenarTelefone(){
         int n = contactos.size();
 
@@ -141,13 +91,39 @@ public class ListaTelefonica{
         }
     }
 
-    public static void mainOptions(){
+    // Método usado para listar as opções disponíveis para o utilizador.
+    public static void Opcoes(){
         System.out.println("##########################################################");
         System.out.println("# 1 - Adicionar Contacto                                 #");
         System.out.println("# 2 - Modificar Contacto                                 #");
         System.out.println("# 3 - Apagar Contacto                                    #");
-        System.out.println("# 4 - Listar Todos os Contactos                          #");
+        System.out.println("# 4 - Ordenar p/ Nome                                    #");
+        System.out.println("# 5 - Ordenar p/ Número de Telefone                      #");
+        System.out.println("# 6 - Listar Todos os Contactos                          #");
+        System.out.println("# 7 - Pesquisar Contacto                                 #");
+        System.out.println("# 8 - Salvar no CSV                                      #");
         System.out.println("##########################################################");
+    }
+
+    // Método usado para listar os contactos da lista.
+    public void listarContactos(){
+        if(contactos.isEmpty()) {
+            System.out.println("\nA Lista está vazia!");
+        } else {
+            System.out.printf("%-20s %-15s %-30s\n", "Nome", "Telefone", "E-Mail");
+            for (Contacto contacto : contactos){
+                System.out.printf("%-20s %-15s %-30s\n", contacto.getNome(), contacto.getTelefone(), contacto.getEmail());
+            }
+        }
+    }
+
+    public static boolean atributoExiste(String atributo){
+        for (Contacto contacto : contactos){
+            if(contacto.getNome().equals(atributo) || contacto.getTelefone().equals(atributo) || contacto.getEmail().equals(atributo)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
@@ -159,28 +135,286 @@ public class ListaTelefonica{
     ListaTelefonica lista = new ListaTelefonica();
     Scanner scanner = new Scanner(System.in);
 
+    lista.verificarCSV(fich);
+    lista.listarContactos();
+    Opcoes();
 
-    try{
-        lista.verificarCSV(fich);
-        mainOptions();
-        while(escolha > 0 || escolha <=4 || escolha != 0){
-            System.out.println("Escolha uma opção:");
-            escolha = scanner.nextInt();
-            switch (escolha) {
-                case 1:
-                lista.adicionarContacto();
+    while(escolha != 0){
+        System.out.println("Escolha uma opção:");
+        escolha = scanner.nextInt();
+            
+        switch (escolha) {
+            case 1:
+                scanner.nextLine();
+                try{
+
+                    String nomeCompleto;
+                    do{
+                        System.out.println("Primeiro nome do contacto: ");
+                        String nome = scanner.nextLine();
+
+                        System.out.println("Apelido do contacto: ");
+                        String apelido = scanner.nextLine();
+
+                        nomeCompleto = nome + " " + apelido;
+
+                        if(atributoExiste(nomeCompleto)) {
+                            System.out.println("Esta pessoa já existe na lista.");
+                        }
+                        
+                    } while(atributoExiste(nomeCompleto));
+                   
+                    String telefone;
+                    do{
+                        System.out.println("Telefone do contacto: ");
+                        telefone = scanner.nextLine();
+
+                        if(atributoExiste(telefone)) {
+                            System.out.println("Este número de telefone já existe na lista.");
+                        }
+
+                    }while (atributoExiste(telefone));
+                                       
+                    String email;
+                    do{
+                        System.out.println("E-mail do contacto: ");
+                        email = scanner.nextLine();
+
+                        if(atributoExiste(email)){
+                            System.out.println("O endereço de e-mail já se encontra na lista.");
+                        }
+                    } while(atributoExiste(email));
+
+                    Contacto aContacto = new Contacto(nomeCompleto, telefone, email);
+                    contactos.add(aContacto);
+
+                    System.out.println("Contacto adicionado com sucesso!");
+                } catch (Exception e) {
+                    System.err.println("Erro ao adicionar contacto:" + e.getMessage());
+                }   
+                lista.listarContactos();
+                Opcoes();
+                break;
+                    
+            case 2:
+                scanner.nextLine();
+                lista.listarContactos();
+                System.out.println("Indique o nome completo do contacto que deseja modificar: ");
+                String mNomeAntigo;
+                int mEscolha;
+                String mNome;
+                String mTelefone;
+                String mEmail;
+                
+                do{
+                    mNomeAntigo = scanner.nextLine();
+
+                    if (!atributoExiste(mNomeAntigo)) {
+                        System.out.println(mNomeAntigo + " não está na lista!");
+                    }
+                }while (!atributoExiste(mNomeAntigo));  
+
+                try{
+                    for (int i = 0; i < contactos.size(); i++){
+                        Contacto contacto = contactos.get(i);
+                        if(contacto.getNome().equals(mNomeAntigo)){
+                            System.out.printf("%-20s %-15s %-30s\n", contacto.getNome(), contacto.getTelefone(), contacto.getEmail());
+                            do{
+                                System.out.println("##########################################################");
+                                System.out.println("# indique o atributo que deseja alterar:                 #");
+                                System.out.println("# 1 - Nome                                               #");
+                                System.out.println("# 2 - Telefone                                           #");
+                                System.out.println("# 3 - Email                                              #");
+                                System.out.println("##########################################################");
+                                mEscolha = scanner.nextInt();
+
+                                if(mEscolha <1 || mEscolha >3){
+                                    System.out.println("Escolha indisponível");
+                                }
+                                switch (mEscolha) {
+                                    case 1:
+                                        do{
+                                            System.out.println("Novo Nome:");
+                                            mNome = scanner.nextLine();
+                                            if(atributoExiste(mNome)){
+                                                System.out.println("O novo nome já se encontra na lista.");
+                                            }
+                                        } while (atributoExiste(mNome));    
+                                        break;
+                                
+                                    case 2:
+                                        do{
+                                            System.out.println("Novo Número:");
+                                            mTelefone = scanner.nextLine();
+                                            if (atributoExiste(mTelefone)) {
+                                                System.out.println("O novo número já se encontra na lista.");
+                                            }
+                                        } while(atributoExiste(mTelefone));
+                                        break;
+
+                                    case 3:
+                                        do{
+                                            System.out.println("Novo E-mail:");
+                                            mEmail = scanner.nextLine();
+                                            if (atributoExiste(mEmail)) {
+                                                System.out.println("O novo e-mail já se encontra na lista.");
+                                            }
+                                        } while(atributoExiste(mEmail));
+                                        break;
+                                }
+                            } while(mEscolha <1 || mEscolha >3);
+                            System.out.println("Contacto modificado com sucesso!");
+                        }
+                    }
+                    System.out.println("Contacto com o nome " + mNomeAntigo + " não encontrado.");
+                } catch (Exception e) {
+                    System.err.println("Erro na modifcação do contacto:" + e.getMessage());
+                }
+                lista.listarContactos();
+                Opcoes();
                 break;
 
-                case 2:
-                lista.modificarContacto(fileName);
-                break;
-            }
-        }
+            case 3:
+                scanner.nextLine();
+                lista.listarContactos();
+                System.out.println("Indique o nome completo do contacto que deseja apagar: ");
+                String aNomeAntigo;
 
-    } catch (Exception e){
-        lista.salvarCSV(fich);
-        System.err.println("Erro na leitura do ficheiro: " + e.getMessage());
-    }
+                do{
+                    aNomeAntigo = scanner.nextLine();
+
+                    if (!atributoExiste(aNomeAntigo)) {
+                        System.out.println(aNomeAntigo + " não está na lista!");
+                    }
+                }while (!atributoExiste(aNomeAntigo));
+                try{
+                    boolean removido = false;
+                    for(Contacto contacto : contactos){
+                        if(contacto.getNome().equals(aNomeAntigo)){
+                            contactos.remove(contacto);
+                            removido = true;
+                            System.out.println("Contacto removido com sucesso!");
+                            break;
+                        }
+                    }
+                    if(!removido){
+                        System.out.println("Contacto com o nome '" + aNomeAntigo + "' não encontrado.");
+                    } 
+                } catch (Exception e){
+                    System.err.println("Erro ao remover o contacto: " + e.getMessage());
+                }
+                lista.listarContactos();
+                Opcoes();
+                break;
+
+            case 4:
+                lista.ordenarNome();
+                lista.listarContactos();
+                Opcoes();
+                break;
+
+            case 5:
+                lista.ordenarTelefone();
+                lista.listarContactos();
+                Opcoes();
+                break;
+
+            case 6:
+                lista.listarContactos();
+                Opcoes();
+                break;
+
+            case 7:
+                scanner.nextLine();
+                lista.listarContactos();
+                int pEscolha;
+                String pNome;
+                String pTelefone;
+                String pEmail;
+                do{
+                    System.out.println("##########################################################");
+                    System.out.println("# indique o atributo que deseja pesquisar:               #");
+                    System.out.println("# 1 - Nome                                               #");
+                    System.out.println("# 2 - Telefone                                           #");
+                    System.out.println("# 3 - Email                                              #");
+                    System.out.println("##########################################################");
+                    pEscolha = scanner.nextInt();
+
+                    if(pEscolha <1 || pEscolha>3){
+                        System.out.println("Escolha Indisponível.");
+                    } else{
+                        switch(pEscolha) {
+                            case 1:
+                                do{
+                                    System.out.println("Nome do Contacto:");
+                                    pNome = scanner.nextLine();
+
+                                    if (!atributoExiste(pNome)) {
+                                        System.out.println(pNome + " não está na lista");
+                                    }
+                                }while(!atributoExiste(pNome));
+
+                                for (int i = 0; i < contactos.size(); i++){
+                                    Contacto contacto = contactos.get(i);
+                                    if(contacto.getNome().equals(pNome)){
+                                        System.out.printf("%-20s %-15s %-30s\n", contacto.getNome(), contacto.getTelefone(), contacto.getEmail());
+                                    }
+                                }    
+                                break;
+
+                            case 2:
+                                do{
+                                    System.out.println("Número do Contacto:");
+                                    pTelefone = scanner.nextLine();
+
+                                    if (!atributoExiste(pTelefone)) {
+                                        System.out.println(pTelefone + " não está na lista");
+                                    }
+                                }while(!atributoExiste(pTelefone));
+
+                                for (int i = 0; i < contactos.size(); i++){
+                                    Contacto contacto = contactos.get(i);
+                                    if(contacto.getTelefone().equals(pTelefone)){
+                                        System.out.printf("%-20s %-15s %-30s\n", contacto.getNome(), contacto.getTelefone(), contacto.getEmail());
+                                    }
+                                }    
+                                break;
+                                
+                            case 3:
+                                do{
+                                    System.out.println("E-mail do Contacto:");
+                                    pEmail = scanner.nextLine();
+
+                                    if (!atributoExiste(pEmail)) {
+                                        System.out.println(pEmail + " não está na lista");
+                                    }
+                                }while(!atributoExiste(pEmail));
+
+                                for (int i = 0; i < contactos.size(); i++){
+                                    Contacto contacto = contactos.get(i);
+                                    if(contacto.getEmail().equals(pEmail)){
+                                        System.out.printf("%-20s %-15s %-30s\n", contacto.getNome(), contacto.getTelefone(), contacto.getEmail());
+                                    }
+                                }                                    
+                                break;    
+                        }
+                    }
+
+                } while (pEscolha <1 || pEscolha>3);
+
+                break;    
+            case 8:
+                lista.salvarCSV(fich);
+                lista.listarContactos();
+                System.out.println("A lista foi guardada no ficheiro CSV.");
+                Opcoes();
+                break;
+
+            case 0:
+                System.out.println("Obrigado por utilizar a nossa aplicação!");
+            }        
     
+    }
+    scanner.close();
     }
 }
